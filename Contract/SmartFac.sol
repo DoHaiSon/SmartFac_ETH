@@ -59,10 +59,25 @@ contract SmartFac {
   function Fac_name() public view virtual returns (string memory) {
     return name;
   }
+  
+  function print_trusted_acc() public view returns (address[] memory) {
+    require(msg.sender == trusted_acc[0], "Plese use init contract Account.");
+    address[] memory memoryArray = new address[](total_account);
+    for(uint256 i=0; i<total_account; i++)
+        memoryArray[i] = trusted_acc[i];
+    return memoryArray;
+  }
 
-  function new_Reco(int _id, string memory _data) public {
+  function new_Reco(int _id, uint256 _time, string memory _data) public {
+    bool trusted=false;
+    for(uint256 i=0; i<total_account; i++) {
+        if(trusted_acc[i] == msg.sender)
+            trusted=true;
+    }  
+    require(trusted==true, "This address not in trusted list.");
+    
     ++total_of_reco;  
-    reco[total_of_reco] = Reco(_id, now, _data);
-    emit added(_id, now, _data);
+    reco[total_of_reco] = Reco(_id, _time, _data);
+    emit added(_id, _time, _data);
   } 
 }
