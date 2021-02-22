@@ -1,0 +1,8 @@
+=============== Jan 3, 2021 (+07) ===============
+16:34:12.971977 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:34:12.977603 db@open opening
+16:34:12.978175 version@stat F·[] S·0B[] Sc·[]
+16:34:12.981473 db@janitor F·2 G·0
+16:34:12.981511 db@open done T·3.877473ms
+16:34:12.982870 db@close closing
+16:34:12.982969 db@close done T·95.124µs
