@@ -1,14 +1,4 @@
 const Web3 = require('web3');
-const Tran = require('ethereumjs-tx').Transaction
-const Common = require('ethereumjs-common').default
-
-const my_private = Common.forCustomChain('mainnet', {
-		name: 'My_private',
-		networkId: 1,
-		chainId: 2020,
-	},
-	'petersburg',
-);
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://127.17.0.2:8545"));
 
