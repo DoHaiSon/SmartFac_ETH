@@ -40,12 +40,12 @@ contract SmartFac {
   function remove_acc(address _rm) public{
       require(msg.sender == initaddress, "Plese use init contract Account.");
       require(initaddress != _rm, "Cannot remove init Account.");
-      trusted_acc[_rm] = false;
+      delete trusted_acc[_rm];
   }
   
-//   function Fac_name() public view virtual returns (string memory) {
-//     return name;
-//   }
+  function Fac_name() public view virtual returns (string memory) {
+    return name;
+  }
   
   function new_Reco(int _id, uint256 _time, string memory _data) public {
     require(trusted_acc[msg.sender], "This address not in trusted list.");
