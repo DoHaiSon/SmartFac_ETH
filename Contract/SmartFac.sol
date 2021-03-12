@@ -8,7 +8,7 @@ contract SmartFac {
   uint256 public total_account = 0;
 
   struct Reco {
-    int id;
+    uint256 id;
     uint256 time;
     string data;
   }
@@ -17,7 +17,7 @@ contract SmartFac {
   mapping(address => bool) private trusted_acc;
 
   event added(
-    int id,
+    uint256 id,
     uint256 time,
     string data
   );
@@ -47,7 +47,7 @@ contract SmartFac {
     return name;
   }
   
-  function new_Reco(int _id, uint256 _time, string memory _data) public {
+  function new_Reco(uint256 _id, uint256 _time, string memory _data) public {
     require(trusted_acc[msg.sender], "This address not in trusted list.");
     ++total_of_reco;  
     reco[total_of_reco] = Reco(_id, _time, _data);
