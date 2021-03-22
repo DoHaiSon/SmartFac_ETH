@@ -37,7 +37,7 @@ function checkWork() {
 		tmp = txpool.status.pending;
 		if(tmp != new_tmp) {
 			tmp = txpool.status.pending;
-			console.log("== Not enough 300 transactions: ", tmp);
+			console.log("== Not enough", 1, "transactions: ", tmp);
 			new_tmp = tmp;
 	    }
 	}
