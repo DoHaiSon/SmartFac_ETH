@@ -30,7 +30,6 @@ contract SmartFac {
   
   function add_acc(address _add) public{
       require(msg.sender == initaddress, "Plese use init contract Account.");
-      require(! trusted_acc[_add], "This address was existed.");
       trusted_acc[_add] = true;
   }
   
