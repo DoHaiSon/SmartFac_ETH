@@ -5,7 +5,6 @@ contract SmartFac {
   string private name;
   address private initaddress;
   uint256 public total_of_reco = 0;
-  uint256 public total_account = 0;
 
   struct Reco {
     uint256 id;
@@ -27,14 +26,12 @@ contract SmartFac {
     name = _name;
     trusted_acc[msg.sender] = true;
     initaddress = msg.sender;
-    ++total_account;
   }
   
   function add_acc(address _add) public{
       require(msg.sender == initaddress, "Plese use init contract Account.");
       require(! trusted_acc[_add], "This address was existed.");
       trusted_acc[_add] = true;
-      ++total_account;
   }
   
   function remove_acc(address _rm) public{

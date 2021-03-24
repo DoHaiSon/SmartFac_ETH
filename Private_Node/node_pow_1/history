@@ -2,3 +2,14 @@ admin.addPeer("enode://0bd388424c98830d167c864344816e7b436c14f97f11058dd3031f337
 loadScript('../pending.js')
 eth.accounts
 miner.start(1)
+admin.addPeer("enode://0bd388424c98830d167c864344816e7b436c14f97f11058dd3031f337f77037a169e0406773436784d37a31fa6b6bc30cedc9d8f43ca394e7ab09699c845e596@10.10.64.144:30304")
+eth.hashrate
+miner.start(1)
+eth.hashrate
+miner.getHashrate()
+eth.getHashrate()
+miner.stop()
+loadScript('../pending.js')
+eth.hashrate
+eth.accounts
+eth.getBalance(eth.accounts[2])

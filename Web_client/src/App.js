@@ -29,7 +29,7 @@ class App extends Component {
         //const web3 = new Web3(Web3.givenProvider || "http://localhost:8545") // Use Meta Mask
         const web3 = new Web3(node1)
 
-        window.ethereum.enable()
+        // window.ethereum.enable()
         window.ethereum.autoRefreshOnNetworkChange = false
         //const network = await web3.eth.net.getNetworkType()
         mycontract = await new web3.eth.Contract(ABI, contractaddress)
@@ -148,7 +148,7 @@ class App extends Component {
             }
         }
         this.setState({countID: countID.length - 1});
-        console.log("Done!")
+        // console.log("Done!")
         this.chart.render();
     }
 

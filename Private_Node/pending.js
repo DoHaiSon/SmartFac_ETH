@@ -1,4 +1,4 @@
-var mining_threads = 8
+var mining_threads = 2
 var flag_pt = true
 var count = 10
 var tmp = 0
@@ -48,4 +48,4 @@ function checkWork() {
 // eth.filter("latest", function(err, block) { checkWork(); });
 // eth.filter("pending", function(err, block) { checkWork(); });
 
-setInterval(function(){checkWork()}, 1);
+setInterval(function(){checkWork()}, 10);
