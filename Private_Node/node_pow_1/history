@@ -30,3 +30,8 @@ loadScript('/home/ssllap1/SmartFac_ETH/Private_Node/pending.js')
 eth.accounts
 eth.getBalance(eth.accounts[0])
 loadScript('/home/ssllap1/SmartFac_ETH/Private_Node/pending.js')
+eth.getTransaction(0xd9a23bff8282a60de60a2da0038fe70ed79ce6246d2191fd79c38eccb93609b2)
+eth.getTransaction("0xd9a23bff8282a60de60a2da0038fe70ed79ce6246d2191fd79c38eccb93609b2")
+eth.getTransaction("0x354308e57905a7600ca52d398a4841c1cdae113bc257c8b3f2641886f7cd7c46")
+eth.pendingTransactions.length
+loadScript('/home/ssllap1/SmartFac_ETH/Private_Node/pending.js')
