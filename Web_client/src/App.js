@@ -47,11 +47,11 @@ class App extends Component {
 
         latestblockNumber = myevent[len-1].blockNumber;
         let value, time;
-        for (var i = 500; i < len; i++) {
+        for (var i = 50; i < len; i++) {
             ID = parseInt(this.decrypt(myevent[i].returnValues.id, pri_key_1))
             countID[ID] = true;
             time = parseInt(this.decrypt(myevent[i].returnValues.time, pri_key_1))
-            value = parseFloat(this.decrypt(myevent[i].returnValues.data, pri_key_1))
+            value = parseFloat(this.decrypt(myevent[i].returnValues.data.slice(0, -1), pri_key_1))
             if (time >=0 && value >= 0){
                 dataPoints.push({
                     x: new Date(time),
@@ -134,13 +134,12 @@ class App extends Component {
         if(len === 0)
             return;
         this.setState({latestblockNumber: myevent[len-1].blockNumber})
-
         let value, time;
         for (var i = 0; i < len; i++) {
-            ID = parseFloat(myevent[i].returnValues.id)
+            ID = parseInt(this.decrypt(myevent[i].returnValues.id, pri_key_1))
             countID[ID] = true;
-            time = parseInt(myevent[i].returnValues.time)
-            value = parseFloat(myevent[i].returnValues.data)
+            time = parseInt(this.decrypt(myevent[i].returnValues.time, pri_key_1))
+            value = parseFloat(this.decrypt(myevent[i].returnValues.data.slice(0, -1), pri_key_1))
             if (time >=0 && value >= 0){
                 dataPoints.push({
                     x: new Date(time),
