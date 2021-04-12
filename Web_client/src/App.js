@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import './App.css';
 import Web3 from 'web3';
-import {ABI, contractaddress, address, address_2, node1, node2} from './config'
+import {ABI, contractaddress, address, pri_key_1, address_2, node1, node2, IV_LENGTH, algorithm} from './config'
 // import Tables from "./table"
+import crypto from 'crypto';
 
 import CanvasJSReact from './canvasjs.react';
+import { type } from 'os';
 // var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -28,7 +30,6 @@ class App extends Component {
 
         //const web3 = new Web3(Web3.givenProvider || "http://localhost:8545") // Use Meta Mask
         const web3 = new Web3(node1)
-
         // window.ethereum.enable()
         window.ethereum.autoRefreshOnNetworkChange = false
         //const network = await web3.eth.net.getNetworkType()
@@ -46,11 +47,11 @@ class App extends Component {
 
         latestblockNumber = myevent[len-1].blockNumber;
         let value, time;
-        for (var i = 0; i < len; i++) {
-            ID = parseFloat(myevent[i].returnValues.id)
+        for (var i = 500; i < len; i++) {
+            ID = parseInt(this.decrypt(myevent[i].returnValues.id, pri_key_1))
             countID[ID] = true;
-            time = parseInt(myevent[i].returnValues.time)
-            value = parseFloat(myevent[i].returnValues.data)
+            time = parseInt(this.decrypt(myevent[i].returnValues.time, pri_key_1))
+            value = parseFloat(this.decrypt(myevent[i].returnValues.data, pri_key_1))
             if (time >=0 && value >= 0){
                 dataPoints.push({
                     x: new Date(time),
@@ -76,9 +77,9 @@ class App extends Component {
     async loadEthereum2(){
         const web3 = new Web3(node2)
         // Update Para2
-        setInterval(async () => {
-            this.updatePara2(web3)
-        }, 1000)
+        // setInterval(async () => {
+        //     this.updatePara2(web3)
+        // }, 1000)
 
     }
 
@@ -151,6 +152,17 @@ class App extends Component {
         // console.log("Done!")
         this.chart.render();
     }
+
+    decrypt(text, pri_key) {
+        let textParts = text.split(':');
+        let iv = Buffer.from(textParts.shift(), 'hex');
+        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        let decipher = crypto.createDecipheriv(algorithm, Buffer.from(pri_key, 'hex'), iv);
+        let decrypted = decipher.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString();
+    }
+    
 
     render() {
         var options = {
