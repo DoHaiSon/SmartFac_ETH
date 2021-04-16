@@ -28,11 +28,8 @@ class App extends Component {
 
     async loadEthereum() {
 
-        //const web3 = new Web3(Web3.givenProvider || "http://localhost:8545") // Use Meta Mask
         const web3 = new Web3(node1)
-        // window.ethereum.enable()
         window.ethereum.autoRefreshOnNetworkChange = false
-        //const network = await web3.eth.net.getNetworkType()
         mycontract = await new web3.eth.Contract(ABI, contractaddress)
 
         let myevent;
@@ -77,9 +74,9 @@ class App extends Component {
     async loadEthereum2(){
         const web3 = new Web3(node2)
         // Update Para2
-        // setInterval(async () => {
-        //     this.updatePara2(web3)
-        // }, 1000)
+        setInterval(async () => {
+            this.updatePara2(web3)
+        }, 1000)
 
     }
 
