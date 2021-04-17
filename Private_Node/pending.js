@@ -8,7 +8,7 @@ var time_tmp = 0
 
 function checkWork() {
     var time_now = Date.now(); 
-    if (txpool.status.pending > 0 && (time_now - time_tmp) > 5) {
+    if (txpool.status.pending > 0 && (time_now - time_tmp) > 1000) {
 	miner.start(mining_threads);
 	while(txpool.status.pending > 0) {
 		if(flag_pt == true) {
@@ -17,11 +17,12 @@ function checkWork() {
 		}
 	 }
 	flag_pt = true;
+	time_tmp = time_now;
     }
 		
     else
 	{
-	if (txpool.status.pending > 1) {
+	if (txpool.status.pending > count) {
 		if (eth.mining) return;
 		miner.start(mining_threads);
 		while(txpool.status.pending > 0) {
@@ -37,12 +38,12 @@ function checkWork() {
 		tmp = txpool.status.pending;
 		if(tmp != new_tmp) {
 			tmp = txpool.status.pending;
-			console.log("== Not enough", 1, "transactions: ", tmp);
+			console.log("== Not enough", count, "transactions: ", tmp);
 			new_tmp = tmp;
 	    }
 	}
+	time_tmp = time_now;
     }
-    time_tmp = time_now;
 
 }
 // eth.filter("latest", function(err, block) { checkWork(); });
