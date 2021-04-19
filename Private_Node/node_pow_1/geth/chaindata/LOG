@@ -18,3 +18,13 @@
 18:51:11.509964 db@open done T·21.147977ms
 18:52:05.016411 db@close closing
 18:52:05.016498 db@close done T·86.259µs
+=============== Apr 19, 2021 (+07) ===============
+18:54:40.633752 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+18:54:40.633865 version@stat F·[1] S·987B[987B] Sc·[0.25]
+18:54:40.633887 db@open opening
+18:54:40.633928 journal@recovery F·1
+18:54:40.635953 journal@recovery recovering @3
+18:54:40.640340 memdb@flush created L0@5 N·11 S·464B "Dat..ion,v17":"unc..own,v24"
+18:54:40.641994 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+18:54:40.653813 db@janitor F·4 G·0
+18:54:40.653851 db@open done T·19.939543ms
