@@ -74,18 +74,18 @@
         "id": "677f2da.426fdd4",
         "type": "exec",
         "z": "20a22429.5f7e9c",
-        "command": "ls",
+        "command": "timeout 5s /home/iot-nexcom/CIB/Shared/kdd99extractor  >/home/iot-nexcom/CIB/datasets/our_kdd_99/data_raw.csv",
         "addpay": false,
         "append": "",
         "useSpawn": "false",
-        "timer": "",
+        "timer": "1",
         "oldrc": false,
-        "name": "",
-        "x": 350,
-        "y": 740,
+        "name": "kdd99extractor",
+        "x": 360,
+        "y": 660,
         "wires": [
             [
-                "25187307.b5270c"
+                "e44540db.8ec0e"
             ],
             [],
             []
@@ -122,36 +122,20 @@
                 "vt": "str"
             }
         ],
-        "repeat": "",
+        "repeat": "6",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 180,
-        "y": 740,
+        "x": 190,
+        "y": 660,
         "wires": [
             [
                 "677f2da.426fdd4"
             ]
         ]
-    },
-    {
-        "id": "25187307.b5270c",
-        "type": "debug",
-        "z": "20a22429.5f7e9c",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 510,
-        "y": 720,
-        "wires": []
     },
     {
         "id": "7616a5e0.41c3ec",
@@ -174,7 +158,7 @@
             },
             {
                 "p": "contractaddress",
-                "v": "0x950fc4922AF23f5bb81a7a926Fc06Fb059C01D90",
+                "v": "0xbBEa55C458C334908966aeEd1Dc2Bb930187Cc0b",
                 "vt": "str"
             },
             {
@@ -220,7 +204,7 @@
         "type": "function",
         "z": "20a22429.5f7e9c",
         "name": "hex to big_endian float32",
-        "func": "raw = msg.payload[0].toString(16) + msg.payload[1].toString(16);\nenergyReadingkWh = Buffer.from(raw + \"0000\",'hex').readFloatBE(0);\nid = '1';\ntime = (new Date().getTime()).toString();\nvalue = energyReadingkWh.toString();\n\nmsg.payload = id + \" \" + time + \" \" + value + \" \" + global.get(\"key\")\nreturn msg;",
+        "func": "raw = msg.payload[0].toString(16) + msg.payload[1].toString(16);\nenergyReadingkWh = Buffer.from(raw + \"0000\",'hex').readFloatBE(0);\nid = '1';\ntime = (new Date().getTime()).toString();\nvalue = energyReadingkWh.toString();\nif (isNaN(energyReadingkWh)) {return null;}\nmsg.payload = id + \" \" + time + \" \" + value + \" \" + global.get(\"key\")\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -259,7 +243,7 @@
         "type": "functionx",
         "z": "20a22429.5f7e9c",
         "name": "Send Transaction",
-        "func": "var Web3 = require(\"web3\")       // install latest   version\nconst web3 = new Web3(new Web3.providers.HttpProvider(global.get(\"jsonRPC\")));\n\nABI = [{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_add\",\"type\":\"address\"}],\"name\":\"add_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"name\":\"added\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_data\",\"type\":\"string\"}],\"name\":\"new_Reco\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_rm\",\"type\":\"address\"}],\"name\":\"remove_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Fac_name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"reco\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"total_of_reco\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]\n\nbytecode = \"608060405260006002553480156200001657600080fd5b506040516200115d3803806200115d833981810160405260208110156200003c57600080fd5b81019080805160405193929190846401000000008211156200005d57600080fd5b838201915060208201858111156200007457600080fd5b82518660018202830111640100000000821117156200009257600080fd5b8083526020830192505050908051906020019080838360005b83811015620000c8578082015181840152602081019050620000ab565b50505050905090810190601f168015620000f65780820380516001836020036101000a031916815260200191505b50604052505050600081511162000175576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252600d8152602001807f4d697373696e67206e616d652e0000000000000000000000000000000000000081525060200191505060405180910390fd5b80600090805190602001906200018d9291906200022e565b506001600460003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff02191690831515021790555033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050620002dd565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106200027157805160ff1916838001178555620002a2565b82800160010185558215620002a2579182015b82811115620002a157825182559160200191906001019062000284565b5b509050620002b19190620002b5565b5090565b620002da91905b80821115620002d6576000816000905550600101620002bc565b5090565b90565b610e7080620002ed6000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c806303a34b0d1461006757806306c06430146100ab57806311d274551461022a5780638f90ba7f146102ad578063d375d66814610496578063f4719ad9146104b4575b600080fd5b6100a96004803603602081101561007d57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506104f8565b005b6100d7600480360360208110156100c157600080fd5b8101908080359060200190929190505050610616565b60405180806020018060200180602001848103845287818151815260200191508051906020019080838360005b8381101561011f578082015181840152602081019050610104565b50505050905090810190601f16801561014c5780820380516001836020036101000a031916815260200191505b50848103835286818151815260200191508051906020019080838360005b8381101561018557808201518184015260208101905061016a565b50505050905090810190601f1680156101b25780820380516001836020036101000a031916815260200191505b50848103825285818151815260200191508051906020019080838360005b838110156101eb5780820151818401526020810190506101d0565b50505050905090810190601f1680156102185780820380516001836020036101000a031916815260200191505b50965050505050505060405180910390f35b610232610808565b6040518080602001828103825283818151815260200191508051906020019080838360005b83811015610272578082015181840152602081019050610257565b50505050905090810190601f16801561029f5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b610494600480360360608110156102c357600080fd5b81019080803590602001906401000000008111156102e057600080fd5b8201836020820111156102f257600080fd5b8035906020019184600183028401116401000000008311171561031457600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019064010000000081111561037757600080fd5b82018360208201111561038957600080fd5b803590602001918460018302840111640100000000831117156103ab57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019064010000000081111561040e57600080fd5b82018360208201111561042057600080fd5b8035906020019184600183028401116401000000008311171561044257600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192905050506108aa565b005b61049e610b95565b6040518082815260200191505060405180910390f35b6104f6600480360360208110156104ca57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610b9b565b005b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff16146105bb576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260208152602001807f506c6573652075736520696e697420636f6e7472616374204163636f756e742e81525060200191505060405180910390fd5b6001600460008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff02191690831515021790555050565b6003602052806000526040600020600091509050806000018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156106c25780601f10610697576101008083540402835291602001916106c2565b820191906000526020600020905b8154815290600101906020018083116106a557829003601f168201915b505050505090806001018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156107605780601f1061073557610100808354040283529160200191610760565b820191906000526020600020905b81548152906001019060200180831161074357829003601f168201915b505050505090806002018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156107fe5780601f106107d3576101008083540402835291602001916107fe565b820191906000526020600020905b8154815290600101906020018083116107e157829003601f168201915b5050505050905083565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156108a05780601f10610875576101008083540402835291602001916108a0565b820191906000526020600020905b81548152906001019060200180831161088357829003601f168201915b5050505050905090565b600460003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1661094c576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401808060200182810382526021815260200180610e1a6021913960400191505060405180910390fd5b6002600081546001019190508190555060405180606001604052808481526020018381526020018281525060036000600254815260200190815260200160002060008201518160000190805190602001906109a8929190610d74565b5060208201518160010190805190602001906109c5929190610d74565b5060408201518160020190805190602001906109e2929190610d74565b509050507fc5f15ea05ff1439e4c2897e2581b54be666d930feca949f05d9726d8341cb33633848484604051808573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001806020018060200180602001848103845287818151815260200191508051906020019080838360005b83811015610a85578082015181840152602081019050610a6a565b50505050905090810190601f168015610ab25780820380516001836020036101000a031916815260200191505b50848103835286818151815260200191508051906020019080838360005b83811015610aeb578082015181840152602081019050610ad0565b50505050905090810190601f168015610b185780820380516001836020036101000a031916815260200191505b50848103825285818151815260200191508051906020019080838360005b83811015610b51578082015181840152602081019050610b36565b50505050905090810190601f168015610b7e5780820380516001836020036101000a031916815260200191505b5097505050505050505060405180910390a1505050565b60025481565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610c5e576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260208152602001807f506c6573652075736520696e697420636f6e7472616374204163636f756e742e81525060200191505060405180910390fd5b8073ffffffffffffffffffffffffffffffffffffffff16600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610d22576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252601b8152602001807f43616e6e6f742072656d6f766520696e6974204163636f756e742e000000000081525060200191505060405180910390fd5b600460008273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81549060ff021916905550565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610db557805160ff1916838001178555610de3565b82800160010185558215610de3579182015b82811115610de2578251825591602001919060010190610dc7565b5b509050610df09190610df4565b5090565b610e1691905b80821115610e12576000816000905550600101610dfa565b5090565b9056fe546869732061646472657373206e6f7420696e2074727573746564206c6973742ea26469706673582212209a8fac4bb736fe79f2df579c75efccb77513353e21f3006e7a5fc6885d560bd964736f6c63430006010033\"\n\nconst account = global.get(\"account\"); \n\n// Unlock the coinbase account to make transactions out of it\nnode.warn(\"Unlocking coinbase account\");\nvar password = \"123456\";\ntry {\n  web3.eth.personal.unlockAccount(account, password);\n} catch(e) {\n  node.ward(e);\n  return;\n}\n\nconst myContract = new web3.eth.Contract(ABI)\nlet options = {\n\targuments: [msg.data],\n\tdata: bytecode\n}\n\nvar gasEstimate = await myContract.deploy(options).estimateGas() + 1e5;\nawait myContract.deploy(options)\n.send({\n\tfrom: account,\n\tgas: web3.utils.toHex(gasEstimate),\n\tgasPrice: web3.utils.toHex(web3.utils.toWei('1','gwei'))\n}, function(error, transactionHash){ console.log(\"Transaction Hash: \",transactionHash) })\n.on('error', function(error){ console.log(error) })\n.on('receipt', function(receipt){\n   node.warn(\"Contract address: \" + receipt.contractAddress) // contains the new contract address\n})\n\nreturn;",
+        "func": "var Web3 = require(\"web3\")       // install latest   version\nconst web3 = new Web3(new Web3.providers.HttpProvider(global.get(\"jsonRPC\")));\n\nABI = [{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_add\",\"type\":\"address\"}],\"name\":\"add_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"name\":\"added\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_data\",\"type\":\"string\"}],\"name\":\"new_Reco\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_rm\",\"type\":\"address\"}],\"name\":\"remove_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Fac_name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"reco\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"total_of_reco\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]\n\nbytecode = \"608060405260006002553480156200001657600080fd5b506040516200115d3803806200115d833981810160405260208110156200003c57600080fd5b81019080805160405193929190846401000000008211156200005d57600080fd5b838201915060208201858111156200007457600080fd5b82518660018202830111640100000000821117156200009257600080fd5b8083526020830192505050908051906020019080838360005b83811015620000c8578082015181840152602081019050620000ab565b50505050905090810190601f168015620000f65780820380516001836020036101000a031916815260200191505b50604052505050600081511162000175576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252600d8152602001807f4d697373696e67206e616d652e0000000000000000000000000000000000000081525060200191505060405180910390fd5b80600090805190602001906200018d9291906200022e565b506001600460003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff02191690831515021790555033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050620002dd565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106200027157805160ff1916838001178555620002a2565b82800160010185558215620002a2579182015b82811115620002a157825182559160200191906001019062000284565b5b509050620002b19190620002b5565b5090565b620002da91905b80821115620002d6576000816000905550600101620002bc565b5090565b90565b610e7080620002ed6000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c806303a34b0d1461006757806306c06430146100ab57806311d274551461022a5780638f90ba7f146102ad578063d375d66814610496578063f4719ad9146104b4575b600080fd5b6100a96004803603602081101561007d57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506104f8565b005b6100d7600480360360208110156100c157600080fd5b8101908080359060200190929190505050610616565b60405180806020018060200180602001848103845287818151815260200191508051906020019080838360005b8381101561011f578082015181840152602081019050610104565b50505050905090810190601f16801561014c5780820380516001836020036101000a031916815260200191505b50848103835286818151815260200191508051906020019080838360005b8381101561018557808201518184015260208101905061016a565b50505050905090810190601f1680156101b25780820380516001836020036101000a031916815260200191505b50848103825285818151815260200191508051906020019080838360005b838110156101eb5780820151818401526020810190506101d0565b50505050905090810190601f1680156102185780820380516001836020036101000a031916815260200191505b50965050505050505060405180910390f35b610232610808565b6040518080602001828103825283818151815260200191508051906020019080838360005b83811015610272578082015181840152602081019050610257565b50505050905090810190601f16801561029f5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b610494600480360360608110156102c357600080fd5b81019080803590602001906401000000008111156102e057600080fd5b8201836020820111156102f257600080fd5b8035906020019184600183028401116401000000008311171561031457600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019064010000000081111561037757600080fd5b82018360208201111561038957600080fd5b803590602001918460018302840111640100000000831117156103ab57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192908035906020019064010000000081111561040e57600080fd5b82018360208201111561042057600080fd5b8035906020019184600183028401116401000000008311171561044257600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f8201169050808301925050505050505091929192905050506108aa565b005b61049e610b95565b6040518082815260200191505060405180910390f35b6104f6600480360360208110156104ca57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610b9b565b005b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff16146105bb576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260208152602001807f506c6573652075736520696e697420636f6e7472616374204163636f756e742e81525060200191505060405180910390fd5b6001600460008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff02191690831515021790555050565b6003602052806000526040600020600091509050806000018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156106c25780601f10610697576101008083540402835291602001916106c2565b820191906000526020600020905b8154815290600101906020018083116106a557829003601f168201915b505050505090806001018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156107605780601f1061073557610100808354040283529160200191610760565b820191906000526020600020905b81548152906001019060200180831161074357829003601f168201915b505050505090806002018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156107fe5780601f106107d3576101008083540402835291602001916107fe565b820191906000526020600020905b8154815290600101906020018083116107e157829003601f168201915b5050505050905083565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156108a05780601f10610875576101008083540402835291602001916108a0565b820191906000526020600020905b81548152906001019060200180831161088357829003601f168201915b5050505050905090565b600460003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1661094c576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401808060200182810382526021815260200180610e1a6021913960400191505060405180910390fd5b6002600081546001019190508190555060405180606001604052808481526020018381526020018281525060036000600254815260200190815260200160002060008201518160000190805190602001906109a8929190610d74565b5060208201518160010190805190602001906109c5929190610d74565b5060408201518160020190805190602001906109e2929190610d74565b509050507fc5f15ea05ff1439e4c2897e2581b54be666d930feca949f05d9726d8341cb33633848484604051808573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001806020018060200180602001848103845287818151815260200191508051906020019080838360005b83811015610a85578082015181840152602081019050610a6a565b50505050905090810190601f168015610ab25780820380516001836020036101000a031916815260200191505b50848103835286818151815260200191508051906020019080838360005b83811015610aeb578082015181840152602081019050610ad0565b50505050905090810190601f168015610b185780820380516001836020036101000a031916815260200191505b50848103825285818151815260200191508051906020019080838360005b83811015610b51578082015181840152602081019050610b36565b50505050905090810190601f168015610b7e5780820380516001836020036101000a031916815260200191505b5097505050505050505060405180910390a1505050565b60025481565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610c5e576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825260208152602001807f506c6573652075736520696e697420636f6e7472616374204163636f756e742e81525060200191505060405180910390fd5b8073ffffffffffffffffffffffffffffffffffffffff16600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610d22576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252601b8152602001807f43616e6e6f742072656d6f766520696e6974204163636f756e742e000000000081525060200191505060405180910390fd5b600460008273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81549060ff021916905550565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610db557805160ff1916838001178555610de3565b82800160010185558215610de3579182015b82811115610de2578251825591602001919060010190610dc7565b5b509050610df09190610df4565b5090565b610e1691905b80821115610e12576000816000905550600101610dfa565b5090565b9056fe546869732061646472657373206e6f7420696e2074727573746564206c6973742ea26469706673582212209a8fac4bb736fe79f2df579c75efccb77513353e21f3006e7a5fc6885d560bd964736f6c63430006010033\"\n\nconst account = global.get(\"account\"); \n\n// Unlock the coinbase account to make transactions out of it\nnode.warn(\"Unlocking coinbase account\");\nvar password = \"123456\";\ntry {\n  web3.eth.personal.unlockAccount(account, password);\n} catch(e) {\n  node.warn(e);\n  return;\n}\n\nconst myContract = new web3.eth.Contract(ABI);\nlet options = {\n\targuments: [msg.data],\n\tdata: bytecode\n}\n\nvar gasEstimate = await myContract.deploy(options).estimateGas() + 1e5;\nawait myContract.deploy(options)\n.send({\n\tfrom: account,\n\tgas: web3.utils.toHex(gasEstimate),\n\tgasPrice: web3.utils.toHex(web3.utils.toWei('1','gwei'))\n}, function(error, transactionHash){ console.log(\"Transaction Hash: \",transactionHash) })\n.on('error', function(error){ console.log(error) })\n.on('receipt', function(receipt){\n   node.warn(\"Contract address: \" + receipt.contractAddress) // contains the new contract address\n})\n\nreturn;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -277,7 +261,7 @@
         "type": "functionx",
         "z": "20a22429.5f7e9c",
         "name": "Send transaction",
-        "func": "const Web3 = require('web3');\nconst Tran = require('ethereumjs-tx').Transaction\nconst Common = require('ethereumjs-common').default\n\nconst my_private = Common.forCustomChain('mainnet', {\n\t\tname: 'My_private',\n\t\tnetworkId: 1,\n\t\tchainId: 2020,\n\t},\n\t'petersburg'\n);\n\nconst web3 = new Web3(Web3.currentProvider || global.get(\"jsonRPC\"));\n\nconst ABI = [{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_add\",\"type\":\"address\"}],\"name\":\"add_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"name\":\"added\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_data\",\"type\":\"string\"}],\"name\":\"new_Reco\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_rm\",\"type\":\"address\"}],\"name\":\"remove_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Fac_name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"reco\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"total_of_reco\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]\n\nlet account = global.get(\"account\");\n\nconst contractaddress = global.get(\"contractaddress\");\n\nconst myContract = new web3.eth.Contract(ABI, contractaddress);\nraw = msg.payload.split(\" \")\nlet dataTx = myContract.methods.new_Reco(raw[0], raw[1], raw[2]).encodeABI();\n\nawait web3.eth.getTransactionCount(account, 'pending', (err, txCount) => {\n    const rawTx = {\n\t\t\tto: contractaddress,\n\t\t\tfrom: account,\n\t\t\tnonce: web3.utils.toHex(txCount),\n\t\t\tdata: dataTx,\n\t\t\tgasLimit: web3.utils.toHex(5e5),\n\t\t\tgasPrice: web3.utils.toHex(web3.utils.toWei('1','gwei'))\n\t};\n\tconst tx1 = new Tran(rawTx, {common: my_private});\n\tconst key = global.get(\"key\");\t\t\t// Private Key\n\ttx1.sign(Buffer.from(key, 'hex'));\n\tconst serial = tx1.serialize();\n\tconst raw = '0x' + serial.toString('hex');\n\tweb3.eth.sendSignedTransaction(raw, (err, txHash) => {\n\t\tif(err)\t{\n\t\t\tnode.warn(err);\n\t\t}\n\t\tnode.warn(\"Transaction Hash: \" + txHash);\n\t});\n});\n\nreturn;",
+        "func": "const Web3 = require('web3');\nconst Tran = require('ethereumjs-tx').Transaction\nconst Common = require('ethereumjs-common').default\n\nconst my_private = Common.forCustomChain('mainnet', {\n\t\tname: 'My_private',\n\t\tnetworkId: 1,\n\t\tchainId: 2020,\n\t},\n\t'petersburg'\n);\n\nconst web3 = new Web3(Web3.currentProvider || global.get(\"jsonRPC\"));\n\nconst ABI = [{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_add\",\"type\":\"address\"}],\"name\":\"add_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"name\":\"added\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_data\",\"type\":\"string\"}],\"name\":\"new_Reco\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_rm\",\"type\":\"address\"}],\"name\":\"remove_acc\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"Fac_name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"reco\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"id\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"time\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"data\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"total_of_reco\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]\n\nlet account = global.get(\"account\");\n\nconst contractaddress = global.get(\"contractaddress\");\n\nconst myContract = new web3.eth.Contract(ABI, contractaddress);\nraw = msg.payload.split(\" \")\nlet dataTx = myContract.methods.new_Reco(raw[0], raw[1], raw[2]).encodeABI();\n\nawait web3.eth.getTransactionCount(account, 'pending', (err, txCount) => {\n    const rawTx = {\n\t\t\tto: contractaddress,\n\t\t\tfrom: account,\n\t\t\tnonce: web3.utils.toHex(txCount),\n\t\t\tdata: dataTx,\n\t\t\tgasLimit: web3.utils.toHex(10e5),\n\t\t\tgasPrice: web3.utils.toHex(web3.utils.toWei('1','gwei'))\n\t};\n\tconst tx1 = new Tran(rawTx, {common: my_private});\n\tconst key = global.get(\"key\");\t\t\t// Private Key\n\ttx1.sign(Buffer.from(key, 'hex'));\n\tconst serial = tx1.serialize();\n\tconst raw = '0x' + serial.toString('hex');\n\tweb3.eth.sendSignedTransaction(raw, (err, txHash) => {\n\t\tif(err)\t{\n\t\t\tnode.warn(err);\n\t\t}\n\t\tnode.warn(\"Transaction Hash: \" + txHash);\n\t});\n});\n\nreturn;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -299,7 +283,7 @@
         "start": "256",
         "count": 1,
         "dtype": "input",
-        "period": "10",
+        "period": "3",
         "topic": "",
         "name": "",
         "x": 160,
@@ -366,6 +350,169 @@
             [
                 "3ceca6b9.d8389a"
             ]
+        ]
+    },
+    {
+        "id": "e44540db.8ec0e",
+        "type": "exec",
+        "z": "20a22429.5f7e9c",
+        "command": " rm /home/iot-nexcom/CIB/datasets/our_kdd_99/flag.txt &&  echo 1 >  /home/iot-nexcom/CIB/datasets/our_kdd_99/flag.txt",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "add flag",
+        "x": 540,
+        "y": 660,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "5c5288ec.c3d4a8",
+        "type": "exec",
+        "z": "20a22429.5f7e9c",
+        "command": "python3 /home/iot-nexcom/CIB/detector.py",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Detector",
+        "x": 340,
+        "y": 560,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d21ec66b.613f88",
+        "type": "inject",
+        "z": "20a22429.5f7e9c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 560,
+        "wires": [
+            [
+                "5c5288ec.c3d4a8"
+            ]
+        ]
+    },
+    {
+        "id": "9179e50.538b518",
+        "type": "inject",
+        "z": "20a22429.5f7e9c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 760,
+        "wires": [
+            [
+                "a351c118.61d37"
+            ]
+        ]
+    },
+    {
+        "id": "a351c118.61d37",
+        "type": "exec",
+        "z": "20a22429.5f7e9c",
+        "command": "pkill -9 -f python3",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Shutdown Cyber-attack detector",
+        "x": 410,
+        "y": 760,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "48ea27e9.1f4ea8",
+        "type": "inject",
+        "z": "20a22429.5f7e9c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 840,
+        "wires": [
+            [
+                "7088aaf6.af61c4"
+            ]
+        ]
+    },
+    {
+        "id": "7088aaf6.af61c4",
+        "type": "exec",
+        "z": "20a22429.5f7e9c",
+        "command": "chmod -R 777  /home/iot-nexcom/CIB/datasets/our_kdd_99/data_raw.csv",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "chmod dataset",
+        "x": 360,
+        "y": 840,
+        "wires": [
+            [],
+            [],
+            []
         ]
     },
     {
