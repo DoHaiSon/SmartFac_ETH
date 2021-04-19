@@ -1,20 +1,20 @@
-=============== Mar 22, 2021 (+07) ===============
-17:05:36.836627 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-17:05:36.842036 db@open opening
-17:05:36.842740 version@stat F·[] S·0B[] Sc·[]
-17:05:36.846586 db@janitor F·2 G·0
-17:05:36.846613 db@open done T·4.555195ms
-17:16:43.333647 db@close closing
-17:16:43.333795 db@close done T·142.123µs
-=============== Mar 23, 2021 (+07) ===============
-13:10:19.827788 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-13:10:19.828290 version@stat F·[] S·0B[] Sc·[]
-13:10:19.828326 db@open opening
-13:10:19.828436 journal@recovery F·1
-13:10:19.829541 journal@recovery recovering @1
-13:10:19.837621 memdb@flush created L0@2 N·2211 S·57KiB "loc..seq,v19":"version,v1"
-13:10:19.838608 version@stat F·[1] S·57KiB[57KiB] Sc·[0.25]
-13:10:19.847158 db@janitor F·3 G·0
-13:10:19.847178 db@open done T·18.84273ms
-14:41:20.804229 db@close closing
-14:41:20.804307 db@close done T·76.954µs
+=============== Apr 19, 2021 (+07) ===============
+13:52:14.021297 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:52:14.031114 db@open opening
+13:52:14.032529 version@stat F·[] S·0B[] Sc·[]
+13:52:14.036411 db@janitor F·2 G·0
+13:52:14.036437 db@open done T·5.304025ms
+13:55:24.258831 db@close closing
+13:55:24.258927 db@close done T·94.63µs
+=============== Apr 19, 2021 (+07) ===============
+13:55:35.826496 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:55:35.826616 version@stat F·[] S·0B[] Sc·[]
+13:55:35.826632 db@open opening
+13:55:35.826664 journal@recovery F·1
+13:55:35.827331 journal@recovery recovering @1
+13:55:35.831305 memdb@flush created L0@2 N·78 S·958B "loc..seq,v2":"version,v1"
+13:55:35.832075 version@stat F·[1] S·958B[958B] Sc·[0.25]
+13:55:35.844801 db@janitor F·3 G·0
+13:55:35.844828 db@open done T·18.190036ms
+14:04:10.927455 db@close closing
+14:04:10.927614 db@close done T·157.154µs

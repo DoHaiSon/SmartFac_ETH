@@ -22,7 +22,7 @@ function checkWork() {
 		
     else
 	{
-	if (txpool.status.pending > count) {
+	if (txpool.status.pending >= count) {
 		if (eth.mining) return;
 		miner.start(mining_threads);
 		while(txpool.status.pending > 0) {

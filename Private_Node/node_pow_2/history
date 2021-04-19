@@ -40,3 +40,15 @@ eth.getHashrate()
 eth.getBalance(eth.accounts[2])
 eth.accounts[2]
 eth.coinbase
+net.peerCount
+admin.addPeer(enode://8783730b3363ae8b674dea0ab99c16af675af3d356bf74ad9a154495e85e0f10944a409065e697383b417378cb0e72ec7d244e20f309b547d1132608102616a4@127.0.0.1:0?discport=8008)
+admin.addPeer("enode://8783730b3363ae8b674dea0ab99c16af675af3d356bf74ad9a154495e85e0f10944a409065e697383b417378cb0e72ec7d244e20f309b547d1132608102616a4@127.0.0.1:0?discport=8008")
+net.peerCount
+admin.addPeer("enode://8783730b3363ae8b674dea0ab99c16af675af3d356bf74ad9a154495e85e0f10944a409065e697383b417378cb0e72ec7d244e20f309b547d1132608102616a4@127.0.0.1:0?discport=8008")
+admin.nodeInfo
+admin.peers
+admin.nodeInfo.enode
+admin.peers
+miner.start(1)
+miner.stoop()
+miner.stop()
