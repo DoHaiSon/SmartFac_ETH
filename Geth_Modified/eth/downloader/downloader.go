@@ -29,6 +29,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/eth/protocols/eth"
 	"github.com/ethereum/go-ethereum/eth/protocols/snap"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/event"
@@ -89,7 +90,8 @@ var (
 	errCancelContentProcessing = errors.New("content processing canceled (requested)")
 	errCanceled                = errors.New("syncing canceled (requested)")
 	errNoSyncActive            = errors.New("no sync active")
-	errTooOld                  = errors.New("peer doesn't speak recent enough protocol version (need version >= 64)")
+	errTooOld                  = errors.New("peer's protocol version too old")
+	errNoAncestorFound         = errors.New("no common ancestor found")
 )
 
 type Downloader struct {
@@ -239,7 +241,7 @@ func New(checkpoint uint64, stateDb ethdb.Database, stateBloom *trie.SyncBloom, 
 		headerProcCh:   make(chan []*types.Header, 1),
 		quitCh:         make(chan struct{}),
 		stateCh:        make(chan dataPack),
-		SnapSyncer:     snap.NewSyncer(stateDb, stateBloom),
+		SnapSyncer:     snap.NewSyncer(stateDb),
 		stateSyncStart: make(chan *stateSync),
 		syncStatsState: stateSyncStats{
 			processed: rawdb.ReadFastTrieProgress(stateDb),
@@ -297,7 +299,7 @@ func (d *Downloader) RegisterPeer(id string, version uint, peer Peer) error {
 		// Tests use short IDs, don't choke on them
 		logger = log.New("peer", id)
 	} else {
-		logger = log.New("peer", id[:16])
+		logger = log.New("peer", id[:8])
 	}
 	logger.Trace("Registering sync peer")
 	if err := d.peers.Register(newPeerConnection(id, version, peer, logger)); err != nil {
@@ -324,7 +326,7 @@ func (d *Downloader) UnregisterPeer(id string) error {
 		// Tests use short IDs, don't choke on them
 		logger = log.New("peer", id)
 	} else {
-		logger = log.New("peer", id[:16])
+		logger = log.New("peer", id[:8])
 	}
 	logger.Trace("Unregistering sync peer")
 	if err := d.peers.Unregister(id); err != nil {
@@ -345,7 +347,6 @@ func (d *Downloader) Synchronise(id string, head common.Hash, td *big.Int, mode 
 	case nil, errBusy, errCanceled:
 		return err
 	}
-
 	if errors.Is(err, errInvalidChain) || errors.Is(err, errBadPeer) || errors.Is(err, errTimeout) ||
 		errors.Is(err, errStallingPeer) || errors.Is(err, errUnsyncedPeer) || errors.Is(err, errEmptyHeaderSet) ||
 		errors.Is(err, errPeersUnavailable) || errors.Is(err, errTooOld) || errors.Is(err, errInvalidAncestor) {
@@ -459,8 +460,8 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td *big.I
 			d.mux.Post(DoneEvent{latest})
 		}
 	}()
-	if p.version < 64 {
-		return fmt.Errorf("%w, peer version: %d", errTooOld, p.version)
+	if p.version < eth.ETH65 {
+		return fmt.Errorf("%w: advertized %d < required %d", errTooOld, p.version, eth.ETH65)
 	}
 	mode := d.getMode()
 
@@ -814,6 +815,26 @@ func (d *Downloader) findAncestor(p *peerConnection, remoteHeader *types.Header)
 		}
 	}
 
+	ancestor, err := d.findAncestorSpanSearch(p, mode, remoteHeight, localHeight, floor)
+	if err == nil {
+		return ancestor, nil
+	}
+	// The returned error was not nil.
+	// If the error returned does not reflect that a common ancestor was not found, return it.
+	// If the error reflects that a common ancestor was not found, continue to binary search,
+	// where the error value will be reassigned.
+	if !errors.Is(err, errNoAncestorFound) {
+		return 0, err
+	}
+
+	ancestor, err = d.findAncestorBinarySearch(p, mode, remoteHeight, floor)
+	if err != nil {
+		return 0, err
+	}
+	return ancestor, nil
+}
+
+func (d *Downloader) findAncestorSpanSearch(p *peerConnection, mode SyncMode, remoteHeight, localHeight uint64, floor int64) (commonAncestor uint64, err error) {
 	from, count, skip, max := calculateRequestSpan(remoteHeight, localHeight)
 
 	p.log.Trace("Span searching for common ancestor", "count", count, "from", from, "skip", skip)
@@ -894,6 +915,12 @@ func (d *Downloader) findAncestor(p *peerConnection, remoteHeader *types.Header)
 		p.log.Debug("Found common ancestor", "number", number, "hash", hash)
 		return number, nil
 	}
+	return 0, errNoAncestorFound
+}
+
+func (d *Downloader) findAncestorBinarySearch(p *peerConnection, mode SyncMode, remoteHeight uint64, floor int64) (commonAncestor uint64, err error) {
+	hash := common.Hash{}
+
 	// Ancestor not found, we need to binary search over our chain
 	start, end := uint64(0), remoteHeight
 	if floor > 0 {
@@ -1361,7 +1388,7 @@ func (d *Downloader) fetchParts(deliveryCh chan dataPack, deliver func(dataPack)
 				case err == nil:
 					peer.log.Trace("Delivered new batch of data", "type", kind, "count", packet.Stats())
 				default:
-					peer.log.Trace("Failed to deliver retrieved data", "type", kind, "err", err)
+					peer.log.Debug("Failed to deliver retrieved data", "type", kind, "err", err)
 				}
 			}
 			// Blocks assembled, try to update the progress
@@ -1737,7 +1764,7 @@ func (d *Downloader) processFastSyncContent() error {
 	}()
 
 	closeOnErr := func(s *stateSync) {
-		if err := s.Wait(); err != nil && err != errCancelStateFetch && err != errCanceled {
+		if err := s.Wait(); err != nil && err != errCancelStateFetch && err != errCanceled && err != snap.ErrCancelled {
 			d.queue.Close() // wake up Results
 		}
 	}

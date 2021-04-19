@@ -28,6 +28,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/forkid"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth/downloader"
+	"github.com/ethereum/go-ethereum/eth/protocols/eth"
 	"github.com/ethereum/go-ethereum/light"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/p2p"
@@ -44,9 +45,12 @@ type clientHandler struct {
 	downloader *downloader.Downloader
 	backend    *LightEthereum
 
-	closeCh  chan struct{}
-	wg       sync.WaitGroup // WaitGroup used to track all connected peers.
-	syncDone func()         // Test hooks when syncing is done.
+	closeCh chan struct{}
+	wg      sync.WaitGroup // WaitGroup used to track all connected peers.
+
+	// Hooks used in the testing
+	syncStart func(header *types.Header) // Hook called when the syncing is started
+	syncEnd   func(header *types.Header) // Hook called when the syncing is done
 }
 
 func newClientHandler(ulcServers []string, ulcFraction int, checkpoint *params.TrustedCheckpoint, backend *LightEthereum) *clientHandler {
@@ -111,11 +115,25 @@ func (h *clientHandler) handle(p *serverPeer) error {
 		p.Log().Debug("Light Ethereum handshake failed", "err", err)
 		return err
 	}
+	// Register peer with the server pool
+	if h.backend.serverPool != nil {
+		if nvt, err := h.backend.serverPool.RegisterNode(p.Node()); err == nil {
+			p.setValueTracker(nvt)
+			p.updateVtParams()
+			defer func() {
+				p.setValueTracker(nil)
+				h.backend.serverPool.UnregisterNode(p.Node())
+			}()
+		} else {
+			return err
+		}
+	}
 	// Register the peer locally
 	if err := h.backend.peers.register(p); err != nil {
 		p.Log().Error("Light Ethereum peer registration failed", "err", err)
 		return err
 	}
+
 	serverConnectionGauge.Update(int64(h.backend.peers.len()))
 
 	connectedAt := mclock.Now()
@@ -453,7 +471,7 @@ func (d *downloaderPeerNotify) registerPeer(p *serverPeer) {
 		handler: h,
 		peer:    p,
 	}
-	h.downloader.RegisterLightPeer(p.id, ethVersion, pc)
+	h.downloader.RegisterLightPeer(p.id, eth.ETH65, pc)
 }
 
 func (d *downloaderPeerNotify) unregisterPeer(p *serverPeer) {
