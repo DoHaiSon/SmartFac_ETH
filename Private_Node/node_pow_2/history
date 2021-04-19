@@ -52,3 +52,15 @@ admin.peers
 miner.start(1)
 miner.stoop()
 miner.stop()
+admin.nodeInfo.enode
+admin.peers
+admin.nodeInfo.enode
+admin.peers
+loadScript("../pending.js")
+miner.start()
+miner.getHashrate()
+miner.getHashrate
+miner.getHashrate()
+eth.getHashrate()
+eth.getHashrate
+miner.getHashrate()

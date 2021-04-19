@@ -44,7 +44,7 @@ class App extends Component {
 
         latestblockNumber = myevent[len-1].blockNumber;
         let value, time;
-        for (var i = 50; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             ID = parseInt(this.decrypt(myevent[i].returnValues.id, pri_key_1))
             countID[ID] = true;
             time = parseInt(this.decrypt(myevent[i].returnValues.time, pri_key_1))
@@ -58,7 +58,6 @@ class App extends Component {
         }
         this.setState({countID: countID.length - 1});
         this.setState({latestblockNumber: latestblockNumber})
-
         // Update Para
         this.updatePara(web3)
         setInterval(async () => {
@@ -98,7 +97,7 @@ class App extends Component {
     async updatePara(web3){
         var balance =  Math.ceil(await web3.eth.getBalance(address) / 1e6) 
         balance =  web3.utils.fromWei(balance.toString(), 'ether')
-        var hashrate1 = await web3.eth.getHashrate()
+        var hashrate1 = 0
         var totalBlock = await web3.eth.getBlockNumber()
 
         this.setState({account: address})
@@ -111,7 +110,7 @@ class App extends Component {
     async updatePara2(web3){
         var balance2 =  Math.ceil(await web3.eth.getBalance(address_2) / 1e6) 
         balance2 =  web3.utils.fromWei(balance2.toString(), 'ether')
-        var hashrate2 = await web3.eth.getHashrate()
+        var hashrate2 = 0
         var totalBlock = await web3.eth.getBlockNumber()
 
         this.setState({totalBlock2: totalBlock})
@@ -175,7 +174,9 @@ class App extends Component {
             axisY: {
                 title: "Total Power (kWh)",
                 logarithmic: false,
-                includeZero: true
+                includeZero: true,
+		minimum: (Math.min.apply(null, dataPoints.map(function(o) { return o.y; }))) - 2,
+		maximum: (Math.max.apply(null, dataPoints.map(function(o) { return o.y; }))) + 2
             },
             data: [
                 {
