@@ -35,3 +35,8 @@ eth.getTransaction("0xd9a23bff8282a60de60a2da0038fe70ed79ce6246d2191fd79c38eccb9
 eth.getTransaction("0x354308e57905a7600ca52d398a4841c1cdae113bc257c8b3f2641886f7cd7c46")
 eth.pendingTransactions.length
 loadScript('/home/ssllap1/SmartFac_ETH/Private_Node/pending.js')
+admin.peers
+miner.start(1)
+miner.
+admin.addPeer("enode://e81f599adea2cf309582ab473d674d25a2605d3db731f24f13faf2aab3a68fbe76004926e0303a781306b4318dd3bce8406c46265f9dc0cd1424a9071d23f238@192.168.2.100:30303")
+admin.addPeer("enode://e81f599adea2cf309582ab473d674d25a2605d3db731f24f13faf2aab3a68fbe76004926e0303a781306b4318dd3bce8406c46265f9dc0cd1424a9071d23f238@192.168.2.100:8545")
