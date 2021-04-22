@@ -33,8 +33,12 @@ class App extends Component {
         mycontract = await new web3.eth.Contract(ABI, contractaddress)
 
         let myevent;
+	latestblockNumber = await web3.eth.getBlockNumber()
+	let start_scan = 0
+	if (latestblockNumber >= 1000)
+		start_scan = latestblockNumber - 1000;
         await mycontract.getPastEvents('added',{
-            fromBlock: 0
+            fromBlock: start_scan
         }, function(error, events){
             myevent = events
         })
