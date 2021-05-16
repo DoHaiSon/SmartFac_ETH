@@ -5,7 +5,7 @@ export const address = '0x9c8e8c7847e2268482781ae3ed767d6984d63411'
 export const pri_key_1 = 'c2dd6b39ade1ed7abc1a57a6e6e3cb2e2d758f6e7a0f2d711573985f25dced98'
 export const address_2 = '0x3798196db444e0f145476ed6dedeebd0eee8232e'
 export const node1 ="http://192.168.2.107:8545"
-export const node2 ="http://192.168.2.100:8545"
+export const node2 ="http://192.168.2.104:8545"
 
 export const IV_LENGTH = 16
 export const algorithm = 'aes-256-ctr'
