@@ -29,7 +29,7 @@ class App extends Component {
     async loadEthereum() {
 
         const web3 = new Web3(node1)
-        window.ethereum.autoRefreshOnNetworkChange = false
+        // window.ethereum.autoRefreshOnNetworkChange = false
         mycontract = await new web3.eth.Contract(ABI, contractaddress)
 
         let myevent;
